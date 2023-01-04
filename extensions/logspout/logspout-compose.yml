@@ -13,7 +13,8 @@ services:
       ROUTE_URIS: logstash://logstash:50000
       LOGSTASH_TAGS: docker-elk
     networks:
-      - elk
+      private:
+        ipv4_address: 192.168.0.104
     depends_on:
       - logstash
     restart: on-failure

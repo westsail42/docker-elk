@@ -2,25 +2,55 @@
 ## https://github.com/elastic/beats/blob/main/deploy/docker/filebeat.docker.yml
 #
 
+filebeat.inputs:
+  - type: filestream
+    id: ems-collector
+    paths:
+      - /var/log/ppc.json.log
+      - /var/log/rdf-data-logger.json.log
+    json.keys_under_root: true
+    json.add_error_key: true
+
 filebeat.config:
   modules:
     path: ${path.config}/modules.d/*.yml
     reload.enabled: false
 
-filebeat.autodiscover:
-  providers:
-    # The Docker autodiscover provider automatically retrieves logs from Docker
-    # containers as they start and stop.
-    - type: docker
-      hints.enabled: true
+#filebeat.autodiscover:
+#  providers:
+#    # The Docker autodiscover provider automatically retrieves logs from Docker
+#    # containers as they start and stop.
+#    - type: docker
+#      hints.enabled: true
 
-processors:
-  - add_cloud_metadata: ~
+#processors:
+#  - add_cloud_metadata: ~
+#  - rename:
+#      fields:
+#        - from: "context_stack"
+#          to: "tags"
+#        - from: "context_map"
+#          to: "labels"
+#      ignore_missing: true
+#      fail_on_error: false
 
-output.elasticsearch:
-  hosts: ['http://elasticsearch:9200']
-  username: elastic
-  password: ${ELASTIC_PASSWORD}
+#  - drop_fields:
+#      fields: [ "context_stack", "context_map" ]
+#      ignore_missing: true
+
+
+
+#  - add_fields:
+#    fields:
+#      service: ppc
+
+#output.elasticsearch:
+#  hosts: ['http://elasticsearch:9200']
+#  username: elastic
+#  password: ${ELASTIC_PASSWORD}
+
+output.logstash:
+  hosts: [ "192.168.0.102:5044" ]
 
 ## HTTP endpoint for health checking
 ## https://www.elastic.co/guide/en/beats/filebeat/current/http-endpoint.html

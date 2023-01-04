@@ -18,17 +18,21 @@ services:
       - --strict.perms=false
     volumes:
       - ./extensions/filebeat/config/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro,Z
+      - /home/rob/dev/ems-security/_integration_test/veolia-levice/target/classes/container/site/logs/ppc.audit.json.log:/var/log/ppc.audit.json.log:ro
+      - /home/rob/dev/ems-security/_integration_test/veolia-levice/target/classes/container/site/logs/ppc.json.log:/var/log/ppc.json.log:ro
+      - /home/rob/dev/ems-security/_integration_test/veolia-levice/target/classes/container/site/logs/rdf-data-logger.json.log:/var/log/rdf-data-logger.json.log:ro
       - type: bind
         source: /var/lib/docker/containers
         target: /var/lib/docker/containers
         read_only: true
-      - type: bind
-        source: /var/run/docker.sock
-        target: /var/run/docker.sock
-        read_only: true
+#      - type: bind
+#        source: /var/run/docker.sock
+#        target: /var/run/docker.sock
+#        read_only: true
     environment:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
     networks:
-      - elk
+      private:
+        ipv4_address: 192.168.0.105
     depends_on:
       - elasticsearch
